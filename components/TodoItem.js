@@ -19,7 +19,7 @@ const TodoItem = ({ task, id, deleteTodo, updateTodo, isCompleted, toggleTodo })
               <form onSubmit={ handleSubmit }>
                   <input type="text" value={ editInput } onChange={ (e) => setEditInput(e.target.value )} />
                   <button type="submit"> Update </button>
-                  <button onClick={ () => setEditInput(false) } type="button"> Cancel </button>
+                  <button onClick={ () => setIsEditing(false) } type="button"> Cancel </button>
               </form>
               :
               <li > 

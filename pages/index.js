@@ -11,15 +11,19 @@ const index = () => {
     useEffect(() => {
 
         const getUserTodos = async () => {
-        const res = await firestore.collection('todos').where('user_id', '==', 'UulE0HjZnrYsa0ZMhhi3').get();
-        const todos = res.docs.map( todo => {
-            return {
-                id: todo.id,
-                ...todo.data()
-            }
+        const res = await firestore.collection('todos');
+        // run everytime when todos collection change
+        res.onSnapshot(snapShot => {
+           const todos = snapShot.docs.map( todo => {
+               return{
+                   id: todo.id,
+                   ...todo.data()
+               }
+           });
+           setTodos(todos);
         })
         setIsLoading(false)
-        setTodos(todos);
+
         }
 
         getUserTodos();
@@ -33,8 +37,7 @@ const index = () => {
                 task: todo,
                 isCompleted: false
              })
-            const newTodo = [...todos, { id: res.id, task: todo}]
-            setTodos(newTodo)            
+   
         } catch (error) {
             console.log(error);
         }
@@ -50,8 +53,6 @@ const index = () => {
         try {
             // delete doc from firebase
             await firestore.collection('todos').doc(id).delete();
-            const res = todos.filter( todo => todo.id !== id );
-           setTodos(res)
         } catch (error) {
             console.log(error);
         }
@@ -61,8 +62,7 @@ const index = () => {
         try {
             // update doc
             await firestore.collection('todos').doc(id).update({ task: newTodo})
-            const res = todos.map( todo => todo.id === id ? {...todo, task: newTodo} : todo  )
-            setTodos(res)            
+       
         } catch (error) {
             console.log(error);
         }
@@ -72,8 +72,6 @@ const index = () => {
         try {
             // toggle doc
             await firestore.collection('todos').doc(id).update({ isCompleted: !isCompleted })
-            const res = todos.map( todo => todo.id === id ? {...todo, isCompleted: !todo.isCompleted} : todo );
-            setTodos(res);
         } catch (error) {
             console.log(error);
         }
